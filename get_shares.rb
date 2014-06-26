@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
 file = ARGV.shift
-@domain = ARGV.shift
 
 contents = File.read(file).split("\n\n")
 
 def get_attrs(lines)
   attrs = {}
+  attrs['name'] = lines.first.chomp
   lines.each do |line|
     if line.match(':')
     key, value = line.split(':')
@@ -15,21 +15,17 @@ def get_attrs(lines)
   end
   attrs
 end
+
 def process_block(block)
-  if block.match(/domain: #{@domain}/)
-    lines = block.each_line.collect
-    name = lines.first
-    attrs = get_attrs(lines)
+  lines = block.each_line.collect
+  output(get_attrs(lines))
+end
 
-
-    puts "I found #{name} being all wrong"
-    puts attrs.inspect
-  end
+def output(entity)
+  printf("%s %s %s %s %s %s %s\n", entity['name'].sub(' ','.'),entity['domain'],entity['role'],entity['type'],entity['id'],entity['emailAddress'],entity['withLink'])
 end
 
 while contents.length != 0 
   block = contents.shift
   process_block block
 end
-
-puts contents.length
