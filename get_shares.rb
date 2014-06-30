@@ -18,11 +18,12 @@ end
 
 def process_block(block)
   lines = block.each_line.collect
-  output(get_attrs(lines))
+  attrs = get_attrs(lines)
+  output(attrs) unless attrs['role'] == 'owner'
 end
 
 def output(entity)
-  printf("%s %s %s %s %s %s %s\n", entity['name'].sub(' ','.'),entity['domain'],entity['role'],entity['type'],entity['id'],entity['emailAddress'],entity['withLink'])
+  printf("%s %s %s %s %s %s %s\n", entity['name'].gsub(' ','.'),entity['domain'],entity['role'],entity['type'],entity['id'],entity['emailAddress'],entity['withLink'])
 end
 
 while contents.length != 0 
