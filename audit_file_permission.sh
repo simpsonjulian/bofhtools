@@ -4,13 +4,6 @@
 # Input: a CSV file from GAM: see file_diff.sh
 # Output: CSV to stdout of owner, title and ID
 
-input=$1
-olddomain=$2
-newdomain=$3
-[ $# -eq 3 ] || exit 1
-shares_dir="$newdomain/shares"
-
-debug='ue'
 gam() {
   [ -n "$debug" ] && echo "Command is gam.py $@" 1>&2
   ./gam.py $@
@@ -78,14 +71,49 @@ fix_old_shares() {
   IFS=','
 }
 
+enumerate_permissions() {
+  local user=$1
+  local id=$2
+  local file_info=$3
+  gam user $user show drivefileacl $id > $file_info
+}
+
+look_for_old_shares() {
+  local domain=$1
+  local file_info=$2
+  grep -q $olddomain $file_info
+}
+
+input=$1
+olddomain=$2
+newdomain=$3
+mode=$4
+[ $# -eq 4 ] || exit 1
+shares_dir="$newdomain/shares"
+
 mkdir -p $shares_dir
 IFS=','
-while read user title id; do
+while read user shared title id url; do
   file_info="$shares_dir/$id"
-  gam user $user show drivefileacl $id > $file_info
-  if grep -q $olddomain $file_info;then 
-   fix_old_shares $user $id $olddomain $newdomain
-  sleep 10
+  [ -f $file_info -a "$mode" != "repair" ] && continue
+  if [ "$shared" == "True" ]; then
+    [ -f $file_info ] || enumerate_permissions $user $id $file_info
+    if look_for_old_shares $olddomain $file_info; then 
+      if [ "$mode" == "repair" ]; then 
+        echo "$user $title ..."
+        fix_old_shares $user $id $olddomain $newdomain
+        sleep 10
+        enumerate_permissions $user $id $file_info
+        sleep 10
+        if look_for_old_shares $olddomain $file_info; then
+          echo "FAIL: there's still old shares"
+          exit 1
+        fi
+        echo "done."
+      else
+       echo "$user,$shared,$title,$id,$url"
+    fi
   fi 
-  sleep 5
+fi
+
 done < ${input}
