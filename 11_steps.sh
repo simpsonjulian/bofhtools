@@ -2,7 +2,7 @@
 
 # How to remove a Google Apps user gracefully
 # http://blog.backupify.com/2014/01/22/the-11-steps-to-take-before-you-delete-a-user-from-a-google-apps-domain/
-set -x 
+
 die() {
   echo $1
   exit 1
@@ -14,14 +14,14 @@ gam() {
 }
 
 change_password() {
-  local password=$(openssl rand -base64 12)
+  password=$(openssl rand -base64 12)
   local user=$1
   gam update user $user password "$password"
   echo "Write this down: $user: $password"
 }
 
 take_backup() {
-  local $user=$1
+  local user=$1
   die "Manual Step: backup the user $user"
 }
 
@@ -43,9 +43,10 @@ delegate_email() {
 transfer_docs() {
   local user=$1
   local executor=$2
-  docs_count=$(gam user $user show filelist| wc -l )
-  if [ $docs_count -gt 1 ]; then
-    die "Manual Step: Transfer docs from ${user} to ${executor}" 
+  docs_count=$(gam user $user show filelist| grep -v Owner | wc -l )
+  echo $docs_count
+  if [ $docs_count != 0 ]; then
+    die "Manual Step: Transfer docs from ${user} to ${executor}.  Then restart me "
   fi
 }
 
@@ -62,6 +63,30 @@ redirect_mail_to_group() {
   local executor_email=$2
   gam create group $user_email
   gam update group $user_email add manager user $executor_email
+}
+
+show_executor_email() {
+  local user_email=$1
+  local executor_email=$2
+  local password=$3
+
+  cat <<EOF
+Hi there,
+
+I’ve started the process of decommissioning the account $user_email, and you have been nominated as the person who might need things from their Google Apps account.  Their password is now $password.
+
+You should also be able to gain access to their account through delegated email (from the Gmail app).[1]
+
+When you’re sure that there’s nothing of value left in their email, let me know and I’ll remove their account.  You’ll optionally be able to see email that is sent to them after their account is deleted.
+
+Best
+
+Julian.
+
+
+[1] Go to the Gmail app, click on your avatar on the top right.  Select the user's account or click 'add account'.
+EOF
+  
 }
 
 [ $# -ge 3 ] || die "Usage: $0 <user> <executor> <action>"
@@ -90,6 +115,7 @@ if [ $action == 'prep' ]; then
   out_of_office $user $first_name $last_name $executor_email "$company"
   delegate_email $user $executor_email
   transfer_docs $user $executor
+  show_executor_email $user $executor $password
   take_backup $user
 fi
 
