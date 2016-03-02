@@ -1,0 +1,22 @@
+#!/bin/bash
+setup_gam_files() {
+  local target=$1
+  local source_dir=$(pwd)/domain/
+  for file in gamcache client_secrets.json oauth2service.json oauth2service.p12; do
+    ln -nfs $source_dir/$file $target
+  done
+  cp $source_dir/oauth2.txt $target
+}
+
+check() {
+  local response=1
+  local target=$1
+  if [ -f $target/client_secrets.json ]; then
+    response=0
+  fi
+  return $response
+}
+
+target=$1
+[ $# -eq 1 ] || exit 1
+check $target || setup_gam_files $target

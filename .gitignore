@@ -1,0 +1,10 @@
+env.sh
+domain
+*.swp
+.Python
+.idea/
+bin/
+include/
+lib/
+meta_add_user.sh
+pip-selfcheck.json
