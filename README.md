@@ -13,4 +13,4 @@ Scripts for Google Apps Manager, and other things
 
 ## Misc scripts
 * `forwarder.sh`: report on who is forwarding email
-* `./inactive_users.sh`: report on who isn't using their accounts
+* `inactive_users.sh`: report on who isn't using their accounts
