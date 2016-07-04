@@ -31,8 +31,7 @@ create_takeout() {
 
 cloud_pages() {
   local user=$1
-  die 
-  "Go run the Cloud Pages decomissioning process"
+  die "Go run the Cloud Pages decomissioning process"
 }
 
 copy_takeout() {
@@ -108,7 +107,7 @@ When you’re sure that there’s nothing of value left in their email, let me k
   ./send_email.sh $executor_email "$user_email" "$message"
 }
 
-usage="Usage: $0 <user name> <action> <executor>"
+usage="Usage: $0 <user name> prep|harvest|followup <executor>"
 [ $# -ge 3 ] || die "$usage"
 
 user=$1
@@ -138,10 +137,10 @@ if [ $action == 'prep' ]; then
   remove_from_groups $user
   two_step_exclusion $user
   create_takeout $user
-elif [ $action == 'two' ]; then
+elif [ $action == 'harvest' ]; then
   copy_takeout $user
   cloud_pages $user
-elif [ $action == 'delete' ]; then
+elif [ $action == 'followup' ]; then
   redirect_mail_to_group $user_email $executor_email
 else
   die $usage
