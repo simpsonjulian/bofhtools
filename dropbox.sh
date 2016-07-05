@@ -1,10 +1,31 @@
 #!/bin/bash
-
 remove() {
-  curl -X POST https://api.dropboxapi.com/2/team/members/remove \
-    --header "Authorization: Bearer <get access token>" \
+  email=$1
+  exec_email=$2
+
+  file_name="/tmp/dropbox_remove_user.json"
+  cat <<-EOF > $file_name
+  {
+    "user": {
+        ".tag": "email",
+        "email": "$email"
+    },
+    "wipe_data": true,
+    "transfer_dest_id": {
+        ".tag": "email",
+        "email": "$exec_email"
+    },
+    "transfer_admin_id": {
+        ".tag": "email",
+        "email": "$SYSTEMS_ADMIN"
+    }
+  }
+EOF
+  curl -svfX POST https://api.dropboxapi.com/2/team/members/remove \
+    --header "Authorization: Bearer $DROPBOX_APP_TOKEN" \
     --header "Content-Type: application/json" \
-    --data "{\"user\": {\".tag\": \"team_member_id\",\"team_member_id\": \"dbmid:efgh5678\"},\"wipe_data\": true,\"transfer_dest_id\": {\".tag\": \"team_member_id\",\"team_member_id\": \"dbmid:efgh5678\"},\"transfer_admin_id\": {\".tag\": \"team_member_id\",\"team_member_id\": \"dbmid:efgh5678\"}}"
+    --data @$file_name
+  rm $file_name
 }
 
 body() {
@@ -30,32 +51,38 @@ add() {
   file_name=/tmp/dropbox_add_user.json
   body $email $fname $lname $file_name
 
-  curl -X POST https://api.dropbox.com/1/team/members/add \
+  curl -sX POST https://api.dropbox.com/1/team/members/add \
     --header "Authorization: Bearer $DROPBOX_APP_TOKEN" \
     --header "Content-Type: application/json" \
     --data @$file_name 
+  rm $file_name
 }
 
 usage() {
-  echo "Usage: $0 <add|remove> <email> [firstname] [lastname]"
+  echo "Usage: $0 add <user email> [firstname] [lastname]
+       $0 remove <user email> <executor email>"
 }
-
-action=$1
-email=$2
-fname=$3
-lname=$4
 
 if [ $# -lt 2 ]; then
   usage
   exit 1
 fi
 
+action=$1
+shift
+email=$1
+shift
+echo $action
+
 . env.sh
 
 if [ $action == 'add' ]; then
-  add $email $fname $lname
+  fname=$1
+  lname=$2
+  echo add $email $fname $lname
 elif [ $action == 'remove' ]; then
-  remove $email
+  executor=$1
+  remove $email $executor
 else
   usage
 fi
