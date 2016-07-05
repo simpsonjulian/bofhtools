@@ -17,8 +17,9 @@ Please log on to Trello with your Google Apps account to find out more:
 https://trello.com/
 "
 
-if [ "$action" == 'add' ]; then
+if [ "$action" == 'add' -o "$action" == 'remove' ]; then
   ./trello_user.py $action $email "$full_name"
 else
-  echo "Usage: $0 <add|remove> <email>"
+  echo "Usage: $0 add <email>
+   $0 remove <username>"
 fi
