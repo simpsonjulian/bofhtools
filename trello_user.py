@@ -15,7 +15,8 @@ script, action, email, full_name = sys.argv
 
 organization = [org for org in (client.get_organisations()) if org.name == org_name][0]
 
-def get_trello_id(email_address='julian.simpson@neotechnology.com'):
+
+def get_trello_id(email_address):
     return client.fetch_json('/search/members', query_params=dict(query=email_address))[0]['id']
 
 if action == 'add':
