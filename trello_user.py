@@ -12,14 +12,20 @@ org_name = environ.get('TRELLO_ORG')
 client = trolly.client.Client(key, token)
 script, action, email, full_name = sys.argv
 
+
 organization = [org for org in (client.get_organisations()) if org.name == org_name][0]
+
+def get_trello_id(email_address='julian.simpson@neotechnology.com'):
+    return client.fetch_json('/search/members', query_params=dict(query=email_address))[0]['id']
+
 if action == 'add':
-    print organization.add_member(email=email, fullname=full_name)
+    organization.add_member(email=email, fullname=full_name)
+    print "{} added".format(email)
 elif action == 'remove':
-    org_json = client.fetch_json('/organizations/' + org_name + '/members', 'GET')
-    member_id = [ member for member in org_json if member['username'] == email ][0]['id']
+    member_id = get_trello_id(email)
     if member_id:
         print organization.remove_member(member_id)
+        print "{} removed".format(email)
     else:
         print "Member not found"
 else:
