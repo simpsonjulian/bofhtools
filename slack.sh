@@ -14,4 +14,7 @@ die() {
 
 if [ $action == 'add' ]; then
   curl -X POST -d email=$email -d token=$SLACK_TOKEN https://${SLACK_HOST}.slack.com/api/users.admin.invite
+elif [ $action == 'remove' ]; then
+  echo "Manual Step: remove this account from Slack"
+
 fi

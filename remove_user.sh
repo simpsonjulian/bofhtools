@@ -89,17 +89,17 @@ two_step_exclusion() {
 }
 
 show_executor_email() {
-  local user_email=$1
-  local executor_email=$2
+  local user_email="$1@${domain}"
+  local executor_email="$2@${domain}"
   local password=$3
 
 message="Hi there,
 
-I’ve started the process of decommissioning the account $user_email, and you have been nominated as the person who might need things from their Google Apps account.  Their password is now $password.
+I’ve started the process of decommissioning the account ${user_email}@${domain}.  You have been identified as someone who might need access to their digital belongings.  Their password is now $password.
 
 You should also be able to gain access to their account through delegated email (from the Gmail app).[1]
 
-When you’re sure that there’s nothing of value left in their email, let me know and I’ll remove their account.  You’ll optionally be able to see email that is sent to them after their account is deleted.
+We'll automatically delete this account in 3 months.  You’ll optionally be able to see email that is sent to them after their account is deleted.
 
 
 [1] Go to the Gmail app, click on your avatar on the top right.  Select the user's account or click 'add account'.
