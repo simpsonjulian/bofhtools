@@ -1,4 +1,5 @@
 #!/bin/bash
+
 die() {
   echo $@
   exit 1
@@ -12,7 +13,12 @@ domain=$3
 group=$4
 recipient=$5
 
-[ $# -eq 5 ] || die "Usage: $0 firstname lastname domain group (case insensitive) recipient"
+#[ $# -eq 5 ] || die "Usage: $0 firstname lastname domain group (case insensitive) recipient"
+
+for varname in domain TWO_STEP_EXCEPTION_GROUP GAM_DIR foo; do
+  echo $varname
+  eval "[ ! -z \${$varname:-} ]" || die "Error: I need a ${varname} variable set in env.sh"
+done
 
 username=`echo ${firstname}.${lastname} | awk '{print tolower($0)}'`
 password=`pwgen -Bs 11 1`

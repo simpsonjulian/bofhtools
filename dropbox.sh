@@ -1,4 +1,5 @@
 #!/bin/bash
+
 remove() {
   email=$1
   exec_email=$2
@@ -51,10 +52,11 @@ add() {
   file_name=/tmp/dropbox_add_user.json
   body $email $fname $lname $file_name
 
-  curl -sX POST https://api.dropbox.com/1/team/members/add \
+
+  curl -fsX POST https://api.dropbox.com/1/team/members/add \
     --header "Authorization: Bearer $DROPBOX_APP_TOKEN" \
     --header "Content-Type: application/json" \
-    --data @$file_name 
+    --data @$file_name || die "Something went wrong talking to Dropbox"
   rm $file_name
 }
 
@@ -79,7 +81,7 @@ echo $action
 if [ $action == 'add' ]; then
   fname=$1
   lname=$2
-  echo add $email $fname $lname
+  add $email $fname $lname
 elif [ $action == 'remove' ]; then
   executor=$1
   remove $email $executor
