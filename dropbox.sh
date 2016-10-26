@@ -1,5 +1,10 @@
 #!/bin/bash
 
+die() {
+  echo $1
+  exit 1
+}
+
 remove() {
   email=$1
   exec_email=$2
@@ -21,6 +26,7 @@ remove() {
         "email": "$SYSTEMS_ADMIN"
     }
   }
+
 EOF
   curl -svfX POST https://api.dropboxapi.com/2/team/members/remove \
     --header "Authorization: Bearer $DROPBOX_APP_TOKEN" \
@@ -48,8 +54,8 @@ add() {
   local email=$1
   local fname=$2
   local lname=$3
+  local file_name=/tmp/dropbox_add_user.json
 
-  file_name=/tmp/dropbox_add_user.json
   body $email $fname $lname $file_name
 
 
