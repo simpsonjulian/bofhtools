@@ -13,11 +13,12 @@ domain=$3
 group=$4
 recipient=$5
 
-#[ $# -eq 5 ] || die "Usage: $0 firstname lastname domain group (case insensitive) recipient"
+[ $# -eq 5 ] || die "Usage: $0 firstname lastname domain group (case insensitive) recipient"
 
-for varname in domain TWO_STEP_EXCEPTION_GROUP GAM_DIR foo; do
-  echo $varname
-  eval "[ ! -z \${$varname:-} ]" || die "Error: I need a ${varname} variable set in env.sh"
+for varname in domain TWO_STEP_EXCEPTION_GROUP GAM_DIR; do
+  if [ ! -n "${!varname}" ]; then
+    die "Error: I need a ${varname} variable set in env.sh"
+  fi
 done
 
 username=`echo ${firstname}.${lastname} | awk '{print tolower($0)}'`
