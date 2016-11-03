@@ -40,7 +40,7 @@ body() {
   local fname=$2
   local lname=$3
   local file_name=$4
-  cat <<-EOF > $file_name
+  cat <<-EOF > ${file_name}
   {
   "member_email": "${email}",
   "member_given_name": "${fname}",
@@ -58,7 +58,6 @@ add() {
 
   body $email $fname $lname $file_name
 
-
   curl -fsX POST https://api.dropbox.com/1/team/members/add \
     --header "Authorization: Bearer $DROPBOX_APP_TOKEN" \
     --header "Content-Type: application/json" \
@@ -71,7 +70,7 @@ usage() {
        $0 remove <user email> <executor email>"
 }
 
-if [ $# -lt 2 ]; then
+if [ $# -lt 4 ]; then
   usage
   exit 1
 fi
