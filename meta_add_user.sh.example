@@ -1,0 +1,18 @@
+#!/bin/bash
+. env.sh
+
+first=$1
+last=$2
+group=$3
+personal=$4
+
+[ "$#" -eq 4 ] || exit 1
+
+email=`echo $first.$last@$domain |  awk '{print tolower($0)}'`
+
+./create_user.sh $first $last $domain $group $personal
+./trello.sh add $email
+if [ ! $group == 'notdropboxuser' ]; then
+./dropbox.sh add $email $first $last
+fi
+./slack.sh add $email
