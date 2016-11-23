@@ -14,3 +14,7 @@ Scripts for Google Apps Manager, and other things
 ## Misc scripts
 * `forwarder.sh`: report on who is forwarding email
 * `inactive_users.sh`: report on who isn't using their accounts
+
+## Dependencies
+* `pwgen` (from homebrew on osx)
+* at least 1 python dependency: `pip install -r requirements.txt`
