@@ -17,4 +17,5 @@ Scripts for Google Apps Manager, and other things
 
 ## Dependencies
 * `pwgen` (from homebrew on osx)
-* at least 1 python dependency: `pip install -r requirements.txt`
+* you're best to use virtualenv for python: `virtualenv . && . ./bin/activate`
+* at least 1 python dependency: `./pip install -r requirements.txt`
