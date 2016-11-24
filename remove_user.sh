@@ -5,7 +5,6 @@
 
 # validate both users
 
-gam_dir='../../gam/src/'
 
 die() {
   echo $1
@@ -15,7 +14,7 @@ die() {
 
 gam() {
   ./check_auth $gam_dir
-  $gam_dir/gam.py $@
+  $GAM_EXECUTABLE $@
 }
 
 noadmin() {
@@ -119,6 +118,7 @@ properties_file='env.sh'
 . $properties_file
 executor_email="${executor}@${domain}"
 user_email="$user@${domain}"
+GAM_EXECUTABLE=${GAM_DIR}/${GAM_COMMAND:-gam.py}
 
 user_info="/tmp/bamgam.$$" || die "Can't find info on $user"
 
