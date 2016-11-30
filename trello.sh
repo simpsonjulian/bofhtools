@@ -18,7 +18,7 @@ https://trello.com/
 "
 
 if [ "$action" == 'add' -o "$action" == 'remove' ]; then
-  ./trello_user.py $action $email "$full_name"
+  ./bin/python trello_user.py $action $email "$full_name"
 else
   echo "Usage: $0 add <email>
    $0 remove <username>"
