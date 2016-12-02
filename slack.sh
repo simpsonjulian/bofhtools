@@ -13,8 +13,9 @@ die() {
 . env.sh
 
 if [ $action == 'add' ]; then
-  curl -X POST -d email=$email -d token=$SLACK_TOKEN https://${SLACK_HOST}.slack.com/api/users.admin.invite
+  curl -sX POST -d email=$email -d token=$SLACK_TOKEN https://${SLACK_HOST}.slack.com/api/users.admin.invite
 elif [ $action == 'remove' ]; then
   echo "Manual Step: remove this account from Slack"
-
+elif [ $action == 'audit' ]; then
+  curl -s https://${SLACK_HOST}.slack.com/api/users.list?token=${SLACK_TOKEN} | jq -c '.members[] | {"deleted":.deleted, "real_name": .profile.real_name , "email": .profile.email}' 
 fi
