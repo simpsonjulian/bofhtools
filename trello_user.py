@@ -4,14 +4,12 @@ import sys
 from os import environ
 
 import trolly
-from trolly.trelloobject import TrelloObject
 
 token = environ.get('TRELLO_API_TOKEN')
 key = environ.get('TRELLO_API_KEY')
 org_name = environ.get('TRELLO_ORG')
 client = trolly.client.Client(key, token)
 script, action, email, full_name = sys.argv
-
 
 organization = [org for org in (client.get_organisations()) if org.name == org_name][0]
 
