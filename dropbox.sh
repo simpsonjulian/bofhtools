@@ -28,7 +28,7 @@ remove() {
   }
 
 EOF
-  curl -svfX POST https://api.dropboxapi.com/2/team/members/remove \
+  curl -sfX POST https://api.dropboxapi.com/2/team/members/remove \
     --header "Authorization: Bearer $DROPBOX_APP_TOKEN" \
     --header "Content-Type: application/json" \
     --data @$file_name
@@ -70,7 +70,7 @@ usage() {
        $0 remove <user email> <executor email>"
 }
 
-if [ $# -lt 4 ]; then
+if [ $# -lt 3 ]; then
   usage
   exit 1
 fi
