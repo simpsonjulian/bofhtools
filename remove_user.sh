@@ -13,7 +13,7 @@ die() {
 
 
 gam() {
-  ./check_auth $gam_dir
+  ./check_auth $GAM_DIR
   $GAM_EXECUTABLE $@
 }
 
@@ -65,7 +65,7 @@ out_of_office() {
   local last_name=$3
   local executor_email=$4
   local company=$5
-  $gam_dir/gam.py user $user vacation on subject "$first_name $last_name has left $company ---" message "Hello\n$first_name $last_name no longer works at $company.\n\nPlease direct all future correspondence to ${executor_email}. Thanks."
+  $GAM_EXECUTABLE user $user vacation on subject "$first_name $last_name has left $company ---" message "Hello\n$first_name $last_name no longer works at $company.\n\nPlease direct all future correspondence to ${executor_email}. Thanks."
 }
 
 delegate_email() {
@@ -116,9 +116,9 @@ executor=$3
 properties_file='env.sh'
 [ -f $properties_file ] || die "I need a properties file called ${properties_file}"
 . $properties_file
+GAM_EXECUTABLE=${GAM_DIR}/${GAM_COMMAND:-gam.py}
 executor_email="${executor}@${domain}"
 user_email="$user@${domain}"
-GAM_EXECUTABLE=${GAM_DIR}/${GAM_COMMAND:-gam.py}
 
 user_info="/tmp/bamgam.$$" || die "Can't find info on $user"
 
