@@ -19,7 +19,7 @@ gam() {
 
 noadmin() {
   local user=$1
-  if [ -n "$NOT_SUPER_ADMIN" ]; then
+  if [ -z "$NOT_SUPER_ADMIN" ]; then
     gam update user $user admin off
   else
     echo "Not removing admin privs: you probably don't have super admin"
@@ -75,7 +75,7 @@ out_of_office() {
 delegate_email() {
   local user=$1
   local executor=$2
-  if [ -n "$NOT_SUPER_ADMIN" ]; then
+  if [ -z "$NOT_SUPER_ADMIN" ]; then
     gam user $user delegate to $executor
   else
     echo "Not delegating email as you're probably not a Super Admin"
