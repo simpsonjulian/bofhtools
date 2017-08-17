@@ -29,7 +29,6 @@ set -e
 $GAM_EXECUTABLE create user $username firstname $firstname lastname $lastname password $password
 $GAM_EXECUTABLE update group $group add member $username
 $GAM_EXECUTABLE update group everyone add member $username
-$GAM_EXECUTABLE update group $TWO_STEP_EXCEPTION_GROUP add member $username
 
 message="
 Hello $firstname,
