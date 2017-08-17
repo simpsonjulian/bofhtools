@@ -38,15 +38,17 @@ cloud_pages() {
 }
 
 copy_takeout() {
+  set -x
   local user=$1
-  gam user $user show filelist id| grep takeout | awk -F ',' '{print $1,$2,$3,$4}' | while read owner filename id url; do
+  gam user $user show filelist title id| grep takeout | awk -F ',' '{print $1,$2,$3,$4}' | while read owner filename id url; do
     echo "Owner: $owner"
     echo "Filename: $filename"
     echo "File ID: $id"
     gam user $user add drivefileacl $id user $SYSTEMS_ADMIN role reader
-    gam user $user update drivefileacl $id $SYSTEMS_ADMIN role owner transferownership true
+    gam user $user update drivefileacl $id $SYSTEMS_ADMIN role owner
     gam user $SYSTEMS_ADMIN update drivefile drivefilename $filename newfilename $user-$filename
   done
+  set +x
 }
 
 remove_from_groups() {
