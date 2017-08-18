@@ -46,7 +46,7 @@ copy_takeout() {
     echo "File ID: $id"
     gam user $user add drivefileacl $id user $SYSTEMS_ADMIN role reader
     gam user $user update drivefileacl $id $SYSTEMS_ADMIN role owner
-    gam user $SYSTEMS_ADMIN update drivefile drivefilename $filename newfilename $user-$filename
+    gam user $user update drivefile id $id newfilename $user-$filename
   done
   set +x
 }
