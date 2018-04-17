@@ -23,7 +23,7 @@ if action == 'add':
 elif action == 'remove':
     member_id = get_trello_id(email)
     if member_id:
-        print organization.remove_member(member_id)
+        organization.remove_member(member_id)
         print "{} removed".format(email)
     else:
         print "Member not found"

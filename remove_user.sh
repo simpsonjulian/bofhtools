@@ -13,8 +13,7 @@ die() {
 
 
 gam() {
-  ./check_auth $GAM_DIR
-  $GAM_EXECUTABLE $@
+  $GAM_BINARY $@
 }
 
 noadmin() {
@@ -40,15 +39,15 @@ cloud_pages() {
 copy_takeout() {
   set -x
   local user=$1
-  gam user $user show filelist title id| grep takeout | awk -F ',' '{print $1,$2,$3,$4}' | while read owner filename id url; do
-    echo "Owner: $owner"
-    echo "Filename: $filename"
-    echo "File ID: $id"
+  gam user $user show filelist id title | egrep 'takeout|All mail Including Spam' | awk -F ',' '{print $1,$2,$3,$4}' | while read owner id filename; do
+    echo $owner
+    echo $filename
+    echo $id
+    echo $url
     gam user $user add drivefileacl $id user $SYSTEMS_ADMIN role reader
     gam user $user update drivefileacl $id $SYSTEMS_ADMIN role owner
-    gam user $user update drivefile id $id newfilename $user-$filename
+    gam user $user update drivefile id $id newfilename "${user}-${filename// /-}"
   done
-  set +x
 }
 
 remove_from_groups() {
@@ -127,7 +126,6 @@ executor=$3
 properties_file='env.sh'
 [ -f $properties_file ] || die "I need a properties file called ${properties_file}"
 . $properties_file
-GAM_EXECUTABLE=${GAM_DIR}/${GAM_COMMAND:-gam.py}
 executor_email="${executor}@${domain}"
 user_email="$user@${domain}"
 
