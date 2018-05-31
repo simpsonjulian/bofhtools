@@ -6,7 +6,7 @@ TWO_WEEKS=$(( $ONE_WEEK * 2 ))
 
 current_date=`date +%s`
 IFS=','
-$GAM_DIR/gam.py print users  LastLoginTime| egrep -v '^Got |^Email|primaryEmail' | while read email last_login; do
+$GAM_DIR/gam.py print users LastLoginTime| egrep -v '^Got |^Email|primaryEmail' | while read email last_login; do
   if [ $last_login == 'Never' ]; then
     echo $email $last_login
   else

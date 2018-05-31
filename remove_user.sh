@@ -65,12 +65,14 @@ change_password() {
 }
 
 out_of_office() {
+  set -x
   local user=$1
   local first_name=$2
-  local last_name=$3
+  local last_name="$3"
   local executor_email=$4
   local company=$5
-  $GAM_EXECUTABLE user $user vacation on subject "$first_name $last_name has left $company ---" message "Hello\n$first_name $last_name no longer works at $company.\n\nPlease direct all future correspondence to ${executor_email}. Thanks."
+  $GAM_BINARY user $user vacation on subject "$first_name $last_name has left $company ---" message "Hello\n$first_name $last_name no longer works at $company.\n\nPlease direct all future correspondence to ${executor_email}. Thanks."
+  set +x
 }
 
 delegate_email() {
@@ -94,7 +96,7 @@ redirect_mail_to_group() {
 
 two_step_exclusion() {
   local user_email=$1
-  gam update group $TWO_STEP_EXCEPTION_GROUP add member $user_email
+  gam update group $TWO_STEP_EXCEPTION_GROUP add $user_email
 }
 
 show_executor_email() {
@@ -140,7 +142,7 @@ if [ $action == 'prep' ]; then
   gam user $user deprovision
   change_password $user
   noadmin $user
-  out_of_office $user $first_name $last_name $executor_email "$company"
+  out_of_office $user $first_name "$last_name" $executor_email "$company"
   delegate_email $user $executor
   show_executor_email $user $executor $password
   remove_from_groups $user

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 die() {
   echo $@
   exit 1
@@ -15,20 +17,18 @@ recipient=$5
 
 [ $# -eq 5 ] || die "Usage: $0 firstname lastname domain group (case insensitive) recipient"
 
-GAM_EXECUTABLE=${GAM_DIR}/${GAM_COMMAND:-gam.py}
-
-for varname in domain TWO_STEP_EXCEPTION_GROUP GAM_DIR; do
+for varname in domain TWO_STEP_EXCEPTION_GROUP GAM_BINARY; do
   if [ ! -n "${!varname}" ]; then
     die "Error: I need a ${varname} variable set in env.sh"
   fi
 done
 
-username=`echo ${firstname}.${lastname} | awk '{print tolower($0)}'`
+username=`echo ${firstname}.${lastname/ /} | awk '{print tolower($0)}'`
 password=`pwgen -Bs 11 1`
 set -e
-$GAM_EXECUTABLE create user $username firstname $firstname lastname $lastname password $password
-$GAM_EXECUTABLE update group $group add member $username
-$GAM_EXECUTABLE update group everyone add member $username
+$GAM_BINARY create user $username firstname $firstname lastname "$lastname" password $password
+$GAM_BINARY update group $group add member $username
+$GAM_BINARY update group everyone add member $username
 
 message="
 Hello $firstname,
