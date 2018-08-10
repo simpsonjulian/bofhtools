@@ -114,9 +114,22 @@ We'll automatically delete this account in 3 months.  You’ll optionally be abl
 
 
 [1] Go to the Gmail app, click on your avatar on the top right.  Select the user's account or click 'add account'.
-" 
+"
   ./send_email.sh $executor_email "$user_email" "$message"
 }
+
+
+show_executor_email_trello() {
+  local user_email="$1@${domain}"
+  local executor_email="$2@${domain}"
+
+message="Hi there,
+
+I’ve started the process of decommissioning the Trello account of ${user_email}@${domain}.  You have been identified as someone who might need to know this.
+"
+  ./send_email.sh $executor_email "$user_email" "$message"
+}
+
 
 usage="Usage: $0 <user name> prep|harvest|followup <executor>"
 [ $# -ge 3 ] || die "$usage"
@@ -145,6 +158,7 @@ if [ $action == 'prep' ]; then
   out_of_office $user $first_name "$last_name" $executor_email "$company"
   delegate_email $user $executor
   show_executor_email $user $executor $password
+  show_executor_email_trello $user $executor
   remove_from_groups $user
   two_step_exclusion $user
   create_takeout $user
