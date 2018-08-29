@@ -64,16 +64,6 @@ change_password() {
   echo "Write this down: $user: $password"
 }
 
-out_of_office() {
-  set -x
-  local user=$1
-  local first_name=$2
-  local last_name="$3"
-  local executor_email=$4
-  local company=$5
-  $GAM_BINARY user $user vacation on subject "$first_name $last_name has left $company ---" message "Hello\n$first_name $last_name no longer works at $company.\n\nPlease direct all future correspondence to ${executor_email}. Thanks."
-  set +x
-}
 
 delegate_email() {
   local user=$1
